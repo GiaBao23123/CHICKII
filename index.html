@@ -13,7 +13,7 @@
         <div class="header-title">🎮 QUIZ BẮC NINH</div>
         <div class="header-sub">Kiến thức – Văn hóa – Lịch sử quê hương</div>
         <div class="button-group">
-          <button id="home-btn" class="neon-bt neon-box1" onclick="goHome()">
+          <button id="home-btn" class="neon-btn neon-box1" onclick="goHome()">
             🏠 VỀ BẮC NINH
           </button>
           <button
@@ -41,7 +41,7 @@
         <button
           id="start-btn"
           style="font-size: 60px"
-          class="neon-box1"
+          class="neon-btn neon-box1"
           onclick="startGame()"
         >
           ▶ BẮT ĐẦU CHƠI
@@ -54,10 +54,12 @@
       <div id="progress-bar-container">
         <div id="progress-bar"></div>
       </div>
+      <div id="toast-container">
+        <div id="toast" class="toast"></div>
+      </div>
       <h2 id="question"></h2>
       <div id="answers"></div>
-      <div id="result-box"></div>
-      <div id="toast" class="toast"></div>
+      <div class="neon-box2" id="result-box"></div>
     </div>
     <script>
       function startTimer() {
@@ -77,8 +79,29 @@
           }
         }, 1000);
       }
+      function shuffleAnswers(question) {
+        // Tạo mảng đối tượng { text, isCorrect }
+        let arr = question.answers.map((text, index) => ({
+          text,
+          isCorrect: index === question.correct,
+        }));
+
+        // Trộn ngẫu nhiên
+        arr.sort(() => Math.random() - 0.5);
+
+        // Gán lại answers và correct mới
+        question.answers = arr.map((item, i) => {
+          // Giữ nguyên A/B/C/D theo vị trí mới
+          const label = String.fromCharCode(65 + i); // 65 = 'A'
+          return `${label}) ${item.text.replace(/^[A-D]\)\s*/, "")}`;
+        });
+
+        question.correct = arr.findIndex((item) => item.isCorrect);
+      }
+
       function loadQuestion() {
         const q = quiz[index];
+        shuffleAnswers(q); // 👈 RANDOM ĐÁP ÁN Ở ĐÂY
         document.getElementById("progress").innerText = `Câu ${index + 1}/${
           quiz.length
         }`;
@@ -141,8 +164,8 @@
         <p><b>❌ Số câu sai:</b> ${wrongCount}</p>
         <p><b>⏱ Thời gian suy nghĩ:</b> ${minutes} phút ${seconds} giây</p>
         <hr>
-        <button onclick="restartGame()">🔄 Chơi lại</button>
-        <button onclick="goHome()">🏠 Về trang chính</button>`;
+  <button class="neon-box1 neon-btn" onclick="restartGame()">🔄 Chơi lại</button>
+  <button class="neon-box1 neon-btn" onclick="goHome()">🏠 Về trang chính</button>`;
         resultBox.innerHTML = html;
         resultBox.style.display = "block";
       }
