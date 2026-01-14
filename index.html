@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./ca.css" />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+    <title>Quiz Game</title>
+  </head>
+  <body class="w3-light-grey">
+    <div class="header w3-content w3-center neon-box2" id="chicki">
+      <div class="header-panel w3-content">
+        <div class="header-title">🎮 QUIZ BẮC NINH</div>
+        <div class="header-sub">Kiến thức – Văn hóa – Lịch sử quê hương</div>
+        <div class="button-group">
+          <button id="home-btn" class="neon-bt neon-box1" onclick="goHome()">
+            🏠 VỀ BẮC NINH
+          </button>
+          <button
+            id="toggle-rules-btn"
+            class="neon-btn neon-box1"
+            onclick="toggleRules()"
+          >
+            📜 XEM / ẨN THỂ LỆ
+          </button>
+        </div>
+      </div>
+
+      <div class="rules w3-content" id="rules-box" style="display: none">
+        <h1>📜 THỂ LỆ</h1>
+        <ul>
+          <li>Mỗi câu hỏi chỉ có <b>1 đáp án đúng</b></li>
+          <li>Thời gian trả lời: <b>20 phút / 30 câu</b></li>
+          <li>Trả lời đúng được <b>+10 điểm</b></li>
+          <li>Hết thời gian <b>sẽ tự nộp bài</b></li>
+          <li>Kết thúc game sẽ hiển thị tổng điểm</li>
+        </ul>
+      </div>
+
+      <div class="w3-center">
+        <button
+          id="start-btn"
+          style="font-size: 60px"
+          class="neon-box1"
+          onclick="startGame()"
+        >
+          ▶ BẮT ĐẦU CHƠI
+        </button>
+      </div>
+    </div>
+    <div class="quiz-container w3-content" id="bubu" style="display: none">
+      <div id="timer">⏰ Thời gian: 10:00</div>
+      <div id="progress">Câu 1/4</div>
+      <div id="progress-bar-container">
+        <div id="progress-bar"></div>
+      </div>
+      <h2 id="question"></h2>
+      <div id="answers"></div>
+      <div id="result-box"></div>
+      <div id="toast" class="toast"></div>
+    </div>
+    <script>
+      function startTimer() {
+        clearInterval(timer);
+        timer = setInterval(() => {
+          totalTime--;
+          let minutes = Math.floor(totalTime / 60);
+          let seconds = totalTime % 60;
+          document.getElementById(
+            "timer"
+          ).innerText = `⏰ Thời gian: ${minutes}:${
+            seconds < 10 ? "0" : ""
+          }${seconds}`;
+          if (totalTime <= 0) {
+            clearInterval(timer);
+            finishGame(); // hết 20 phút → nộp bài
+          }
+        }, 1000);
+      }
+      function loadQuestion() {
+        const q = quiz[index];
+        document.getElementById("progress").innerText = `Câu ${index + 1}/${
+          quiz.length
+        }`;
+        document.getElementById("question").innerText = q.question;
+        const answersDiv = document.getElementById("answers");
+        answersDiv.innerHTML = "";
+        q.answers.forEach((ans, i) => {
+          const div = document.createElement("div");
+          div.className = "answer";
+          div.innerText = ans;
+          div.onclick = () => chooseAnswer(i);
+          answersDiv.appendChild(div);
+        });
+        const progressPercent = ((index + 1) / quiz.length) * 100;
+        document.getElementById("progress-bar").style.width =
+          progressPercent + "%";
+      }
+      function chooseAnswer(choice) {
+        recordResult(choice);
+        highlightCorrect(choice);
+        setTimeout(nextQuestion, 800);
+      }
+      function highlightCorrect(choice = null) {
+        const answersDiv = document.querySelectorAll(".answer");
+        const correctIndex = quiz[index].correct;
+        answersDiv.forEach((div, i) => {
+          if (i === correctIndex) div.classList.add("correct");
+          if (choice === i && choice !== correctIndex)
+            div.classList.add("wrong");
+          div.onclick = null;
+        });
+      }
+      function nextQuestion() {
+        index++;
+        if (index >= quiz.length) {
+          finishGame();
+          return;
+        }
+        loadQuestion();
+      }
+      function finishGame() {
+        clearInterval(timer);
+        finishSound.play(); // 🔊 PHÁT ÂM THANH KẾT THÚC
+        document.getElementById("timer").style.display = "none";
+        document.getElementById("progress").style.display = "none";
+        document.getElementById("question").style.display = "none";
+        document.getElementById("answers").style.display = "none";
+        document.getElementById("progress-bar-container").style.display =
+          "none";
+        const resultBox = document.getElementById("result-box");
+        const totalQuestions = quiz.length;
+        const wrongCount = totalQuestions - correctCount;
+        let timeUsed = 10 * 60 - totalTime;
+        let minutes = Math.floor(timeUsed / 60);
+        let seconds = timeUsed % 60;
+        let html = `
+        <h2>🎉 KẾT QUẢ CUỐI CÙNG</h2>
+        <p><b>🏆 Điểm:</b> ${score}</p>
+        <p><b>✅ Số câu đúng:</b> ${correctCount}</p>
+        <p><b>❌ Số câu sai:</b> ${wrongCount}</p>
+        <p><b>⏱ Thời gian suy nghĩ:</b> ${minutes} phút ${seconds} giây</p>
+        <hr>
+        <button onclick="restartGame()">🔄 Chơi lại</button>
+        <button onclick="goHome()">🏠 Về trang chính</button>`;
+        resultBox.innerHTML = html;
+        resultBox.style.display = "block";
+      }
+      function goHome() {
+        window.location.href = "chickibububububu.html";
+      }
+      function startGame() {
+        document.getElementById("rules-box").style.display = "none";
+        document.getElementById("start-btn").style.display = "none";
+        document.getElementById("home-btn").style.display = "none";
+        document.getElementById("toggle-rules-btn").style.display = "none";
+        document.getElementById("chicki").style.display = "none";
+        document.getElementById("timer").style.display = "block";
+        document.getElementById("progress").style.display = "block";
+        document.getElementById("question").style.display = "block";
+        document.getElementById("answers").style.display = "block";
+        document.getElementById("bubu").style.display = "block";
+        totalTime = 10 * 60;
+        startTimer();
+        loadQuestion();
+        document.getElementById("progress-bar-container").style.display =
+          "block";
+      }
+      function restartGame() {
+        totalTime = 10 * 60;
+        index = 0;
+        score = 0;
+        correctCount = 0;
+        results = [];
+        quiz = quiz.sort(() => Math.random() - 0.5);
+        document.getElementById("result-box").style.display = "none";
+        document.getElementById("bubu").style.display = "block";
+        document.getElementById("timer").style.display = "block";
+        document.getElementById("progress").style.display = "block";
+        document.getElementById("question").style.display = "block";
+        document.getElementById("answers").style.display = "block";
+        document.getElementById("progress-bar-container").style.display =
+          "block";
+        startTimer();
+        loadQuestion();
+      }
+      function toggleRules() {
+        const rulesBox = document.getElementById("rules-box");
+        if (
+          rulesBox.style.display === "none" ||
+          rulesBox.style.display === ""
+        ) {
+          rulesBox.style.display = "block";
+          rulesBox.scrollIntoView({ behavior: "smooth" });
+        } else {
+          rulesBox.style.display = "none";
+        }
+      }
+      let quiz = [
+        {
+          question:
+            "Bắc Ninh được biết đến là cái nôi của loại hình nghệ thuật nào?",
+          answers: ["A) Ca Huế", "B) Ca Trù", "C) Quan họ", "D) Hò vè"],
+          correct: 2,
+        },
+        {
+          question: "Bắc Ninh là tỉnh thuộc vùng nào của Việt Nam?",
+          answers: [
+            "A) Tây Nguyên",
+            "B) Đồng bằng sông Cửu Long",
+            "C) Đồng bằng sông Hồng",
+            "D) Trung du miền núi Bắc Bộ",
+          ],
+          correct: 2,
+        },
+        {
+          question:
+            "Lễ hội Quan họ Bắc Ninh được UNESCO công nhận là Di sản gì?",
+          answers: [
+            "A) Văn hóa phi vật thể cần bảo vệ khẩn cấp",
+            "B) Di sản văn hóa phi vật thể đại diện nhân loại",
+            "C) Di sản thiên nhiên thế giới",
+            "D) Di tích lịch sử cấp quốc gia",
+          ],
+          correct: 1,
+        },
+        {
+          question: "Đền thờ 18 tiến sĩ họ Nguyễn ở Bắc Ninh nằm ở phường nào?",
+          answers: [
+            "A) Phường Vũ Ninh",
+            "B) Phường Suối Hoa",
+            "C) Phường Kim Chân",
+            "D) Phường Đáp Cầu",
+          ],
+          correct: 2,
+        },
+        {
+          question: "Tỉnh Bắc Ninh thuộc vùng kinh tế nào của Việt Nam?",
+          answers: [
+            "A) Đồng bằng sông Cửu Long",
+            "B) Đồng bằng sông Hồng",
+            "C) Bắc Trung Bộ",
+            "D) Duyên hải Nam Trung Bộ",
+          ],
+          correct: 1,
+        },
+        {
+          question: "Thành phố nào là trung tâm tỉnh Bắc Ninh?",
+          answers: [
+            "A) Bắc Ninh",
+            "B) Từ Sơn",
+            "C) Thuận Thành",
+            "D) Yên Phong",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Bắc Ninh giáp tỉnh nào sau đây?",
+          answers: ["A) Hà Giang", "B) Hà Nội", "C) Nghệ An", "D) Huế"],
+          correct: 1,
+        },
+        {
+          question:
+            "Theo dữ liệu 2025, dân số sáp nhập Bắc Ninh và Bắc Giang là bao nhiêu?",
+          answers: [
+            "A) 3.000.000",
+            "B) 3.619.433",
+            "C) 4.000.000",
+            "D) 2.900.000",
+          ],
+          correct: 1,
+        },
+        {
+          question:
+            "GRDP 2024 của Bắc Ninh là bao nhiêu và xếp thứ mấy cả nước?",
+          answers: [
+            "A) 439.776.542 triệu VNĐ, thứ 5",
+            "B) 350.000.000 triệu VNĐ, thứ 7",
+            "C) 500.000.000 triệu VNĐ, thứ 3",
+            "D) 439.776.542 triệu VNĐ, thứ 8",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Bắc Ninh nằm trong vùng khí hậu nào?",
+          answers: [
+            "A) Nhiệt đới gió mùa",
+            "B) Cận nhiệt đới ẩm",
+            "C) Đại dương ôn đới",
+            "D) Sa mạc khô hạn",
+          ],
+          correct: 1,
+        },
+        {
+          question: "Lượng mưa trung bình hàng năm ở Bắc Ninh là:",
+          answers: [
+            "A) 1000 – 1200 mm",
+            "B) 1400 – 1700 mm",
+            "C) 2000 – 2200 mm",
+            "D) 800 – 1000 mm",
+          ],
+          correct: 2,
+        },
+        {
+          question: "Bánh tẻ làng Chờ nổi tiếng ở Bắc Ninh được gói bằng gì?",
+          answers: ["A) Lá chuối", "B) Lá dong", "C) Lá tre", "D) Lá mít"],
+          correct: 1,
+        },
+        {
+          question:
+            "Khu Du lịch Văn hoá Quan họ Cô Mễ nằm ở phường nào của TP. Bắc Ninh?",
+          answers: ["A) Võ Cường", "B) Vũ Ninh", "C) Đáp Cầu", "D) Suối Hoa"],
+          correct: 1,
+        },
+        {
+          question: "Đền Đầm (làng Phù Lưu) thờ ai?",
+          answers: [
+            "A) Chỉ thờ Mẫu",
+            "B) Chỉ thờ Đức thánh Trần",
+            "C) Thờ cả Mẫu và Đức thánh Trần (Hưng Đạo Vương – Trần Quốc Tuấn)",
+            "D) Thờ các vị Trạng nguyên",
+          ],
+          correct: 2,
+        },
+        {
+          question: "Chùa Phật Tích còn gọi là gì?",
+          answers: [
+            "A) Thiên Tâm Tự",
+            "B) Vạn Phúc Tự",
+            "C) Bút Tháp",
+            "D) Tiêu Sơn Tự",
+          ],
+          correct: 1,
+        },
+        {
+          question: "Đình Đình Bảng nổi tiếng với đặc điểm gì?",
+          answers: [
+            "A) Ngôi đình cổ bằng đá",
+            "B) Kỹ thuật chạm khắc gỗ tinh xảo, hàng trăm hình tượng sinh động",
+            "C) Tháp cao 27m",
+            "D) Giếng Ngọc trong đình",
+          ],
+          correct: 1,
+        },
+        {
+          question:
+            "Một trong những mục tiêu của việc tinh gọn bộ máy nhà nước ở Bắc Ninh là gì?",
+          answers: [
+            "A) Tăng số lượng công chức",
+            "B) Giảm biên chế, nâng cao chất lượng đội ngũ cán bộ",
+            "C) Mở rộng diện tích tỉnh",
+            "D) Tăng thuế cho doanh nghiệp",
+          ],
+          correct: 1,
+        },
+        {
+          question:
+            "Bắc Ninh sau sáp nhập có tiềm năng trở thành trung tâm nào của miền Bắc?",
+          answers: [
+            "A) Du lịch – văn hóa",
+            "B) Công nghiệp – logistics – sản xuất quy mô lớn",
+            "C) Nông nghiệp – thủy sản",
+            "D) Thương mại – dịch vụ nhỏ lẻ",
+          ],
+          correct: 1,
+        },
+        {
+          question:
+            "Trong lĩnh vực quốc phòng – an ninh, việc sáp nhập tỉnh giúp gì cho Bắc Ninh?",
+          answers: [
+            "A) Giảm ngân sách quốc phòng",
+            "B) Tăng cường năng lực lực lượng công an, quân sự và củng cố an ninh trật tự",
+            "C) Chuyển toàn bộ lực lượng sang công việc hành chính",
+            "D) Xây dựng các khu nghỉ dưỡng quân đội",
+          ],
+          correct: 1,
+        },
+        {
+          question:
+            "Về cải cách hành chính và dịch vụ công, sau sáp nhập Bắc Ninh sẽ đạt được gì?",
+          answers: [
+            "A) Bộ máy lớn hơn, công chức đông hơn",
+            "B) Trung tâm hành chính công hoạt động hiệu quả, ứng dụng CNTT đồng bộ",
+            "C) Hạn chế dịch vụ công trực tuyến",
+            "D) Không thay đổi cơ chế phục vụ người dân",
+          ],
+          correct: 1,
+        },
+        {
+          question:
+            "Văn miếu Bắc Ninh có bao nhiêu vị đại khoa được vinh danh?",
+          answers: ["A) 107 vị", "B) 300 vị", "C) 677 vị", "D) 1.000 vị"],
+          correct: 2,
+        },
+        {
+          question:
+            "Loại hình dân ca tiêu biểu làm nên bản sắc văn hóa Bắc Ninh là gì?",
+          answers: [
+            "A) Hát xoan",
+            "B) Ca trù",
+            "C) Dân ca Quan họ",
+            "D) Hò Huế",
+          ],
+          correct: 2,
+        },
+        {
+          question: "Lễ hội Lim gắn liền với hoạt động văn hóa nào?",
+          answers: [
+            "A) Đấu vật truyền thống",
+            "B) Đua thuyền",
+            "C) Hát Quan họ",
+            "D) Múa rối nước",
+          ],
+          correct: 2,
+        },
+        {
+          question: "Lễ hội Đền Đô được tổ chức nhằm tưởng niệm đối tượng nào?",
+          answers: [
+            "A) Các vua triều Trần",
+            "B) Các vua triều Lê",
+            "C) Các vua triều Nguyễn",
+            "D) Các vua triều Lý",
+          ],
+          correct: 3,
+        },
+        {
+          question:
+            "Tính đến ngày 05/12/2015, Bắc Ninh có bao nhiêu di sản văn hóa được UNESCO ghi danh?",
+          answers: ["A) 1 di sản", "B) 2 di sản", "C) 3 di sản", "D) 4 di sản"],
+          correct: 2,
+        },
+        {
+          question: "Bắc Ninh nằm ở vị trí chuyển tiếp giữa những vùng nào?",
+          answers: [
+            "A) Đồng bằng sông Cửu Long và Tây Nguyên",
+            "B) Trung du, miền núi phía Bắc và đồng bằng châu thổ sông Hồng",
+            "C) Duyên hải miền Trung và Tây Nguyên",
+            "D) Vùng núi Tây Bắc và Đông Bắc",
+          ],
+          correct: 1,
+        },
+        {
+          question: "Đặc điểm chung của địa hình tỉnh Bắc Ninh là gì?",
+          answers: [
+            "A) Núi cao hiểm trở, bị chia cắt mạnh",
+            "B) Chủ yếu là cao nguyên",
+            "C) Tương đối bằng phẳng, ít bị chia cắt",
+            "D) Hoàn toàn là đồng bằng thấp",
+          ],
+          correct: 2,
+        },
+        {
+          question:
+            "Hai dãy núi hình cánh cung bao quanh địa hình Bắc Ninh là gì?",
+          answers: [
+            "A) Hoàng Liên Sơn và Trường Sơn",
+            "B) Đông Triều và Bắc Sơn",
+            "C) Tam Đảo và Yên Tử",
+            "D) Bắc Sơn và Trường Sơn",
+          ],
+          correct: 1,
+        },
+        {
+          question: "Hệ thống sông lớn chảy qua Bắc Ninh thuộc lưu vực nào?",
+          answers: [
+            "A) Lưu vực sông Hồng",
+            "B) Lưu vực sông Mê Kông",
+            "C) Hệ thống Lục Đầu Giang",
+            "D) Hệ thống sông Đồng Nai",
+          ],
+          correct: 2,
+        },
+        {
+          question:
+            "Ý nghĩa quan trọng của hệ thống sông, hồ và nguồn nước ngầm đối với Bắc Ninh là gì?",
+          answers: [
+            "A) Chỉ phục vụ giao thông đường thủy",
+            "B) Chủ yếu để phát triển du lịch",
+            "C) Đáp ứng nhu cầu sản xuất, sinh hoạt và phát triển đô thị",
+            "D) Gây khó khăn cho phát triển kinh tế",
+          ],
+          correct: 2,
+        },
+      ];
+      quiz = quiz.sort(() => Math.random() - 0.5);
+      let index = 0;
+      let score = 0;
+      let correctCount = 0;
+      let results = [];
+      let totalTime = 10 * 60; // 20 phút = 1200 giây
+      let timer;
+      // Đặt file trong thư mục "amthanh" (không dấu)
+      const correctSound = new Audio("./amthanh/dung.mp3"); // đúng → "Yee!"
+      const wrongSound = new Audio("./amthanh/wrong.mp3"); // sai → "Ô ồ!"
+      const finishSound = new Audio("./amthanh/end.mp3"); // 🔊 âm thanh kết thúc
+      function recordResult(choice) {
+        const q = quiz[index];
+        const isCorrect = choice === q.correct;
+        // Phát âm thanh đúng/sai
+        if (isCorrect) {
+          score += 10;
+          correctCount++;
+          correctSound.play(); // ✅ âm thanh khi đúng
+        } else {
+          wrongSound.play(); // ❌ âm thanh khi sai
+        }
+      }
+      function showToast(message, type) {
+        const toast = document.getElementById("toast");
+        toast.innerText = message;
+        toast.className = `toast show ${type}`;
+        setTimeout(() => {
+          toast.className = "toast";
+        }, 1000);
+      }
+      function recordResult(choice) {
+        const q = quiz[index];
+        const isCorrect = choice === q.correct;
+        if (isCorrect) {
+          score += 10;
+          correctCount++;
+          correctSound.play();
+          showToast(
+            "🎉 Tuyệt quá! Bạn thật xuất sắc, có vẻ câu này không làm khó được bạn!",
+            "correct"
+          );
+        } else {
+          wrongSound.play();
+          showToast("😢 Sai mất rồi! Cố gắng ở câu tiếp theo nhé!", "wrong");
+        }
+      }
+    </script>
+  </body>
+</html>
