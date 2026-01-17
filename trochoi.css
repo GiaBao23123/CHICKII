@@ -1331,4 +1331,7 @@ button.buu {
     max-width: 90vw;
     text-align: center;
   }
+  .back-btn {
+    position: fixed;
+  }
 }
