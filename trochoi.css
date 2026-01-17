@@ -1234,7 +1234,7 @@ button.buu {
     text-align: center;
   }
   .top-buttons {
-    position: static; /* bỏ absolute */
+    position: fixed; /* bỏ absolute */
     display: flex;
     flex-direction: column; /* xếp dọc */
     gap: 10px;
@@ -1249,20 +1249,12 @@ button.buu {
   .table-wrap {
     overflow-x: auto;
   }
-  .rules-controls {
-    top: env(safe-area-inset-top, 10px);
-    right: 10px;
-    gap: 8px;
-  }
-
-  .rules-controls button {
-    font-size: 18px;
-    padding: 8px 12px;
-    opacity: 0.7;
-  }
-
-  .rules-controls button:active {
-    opacity: 1;
+  .back-btn,
+  .sound-btn-history,
+  .sound-btn-rules {
+    position: fixed !important;
+    font-size: 22px;
+    margin: 0;
   }
   .top-buttons {
     display: flex;
@@ -1330,8 +1322,5 @@ button.buu {
     min-width: 240px;
     max-width: 90vw;
     text-align: center;
-  }
-  .back-btn {
-    position: fixed;
   }
 }
