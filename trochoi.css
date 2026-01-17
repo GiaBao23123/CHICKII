@@ -1213,3 +1213,114 @@ button.buu {
     font-size: 14px;
   }
 }
+/* FULL MÀN HÌNH CHO GAME */
+/* ===== FULLSCREEN CHỈ CHO MOBILE ===== */
+@media (max-width: 768px) {
+  #bubu,
+  #history-screen {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100dvh;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right)
+      env(safe-area-inset-bottom) env(safe-area-inset-left);
+    overflow-y: auto;
+    box-sizing: border-box;
+  }
+  .title-history {
+    margin-top: 8px;
+    text-align: center;
+  }
+  .top-buttons {
+    position: static; /* bỏ absolute */
+    display: flex;
+    flex-direction: column; /* xếp dọc */
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .top-buttons button {
+    width: 100%;
+    font-size: 16px;
+    padding: 12px;
+  }
+  .table-wrap {
+    overflow-x: auto;
+  }
+  .back-btn,
+  .sound-btn-history,
+  .sound-btn-rules {
+    position: static !important;
+    font-size: 22px;
+    margin: 0;
+  }
+  .top-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .top-buttons button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+  }
+  body {
+    padding: 10px !important;
+  }
+  .title-history {
+    margin-top: 10px;
+    font-size: 22px;
+    text-align: center;
+  }
+
+  .sound-btn-history,
+  .sound-btn-rules {
+    position: fixed !important;
+    top: env(safe-area-inset-top, 8px);
+    left: env(safe-area-inset-left, 8px);
+    right: auto;
+
+    z-index: 2000;
+
+    padding: 6px 10px;
+    font-size: 14px;
+    border-radius: 999px;
+
+    opacity: 0.65; /* nhạt */
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+
+    box-shadow: 0 0 6px rgba(0, 255, 255, 0.4);
+
+    animation: none !important;
+    transform: none !important;
+  }
+
+  /* Khi chạm mới nổi */
+  .sound-btn-history:active,
+  .sound-btn-rules:active {
+    opacity: 1;
+    box-shadow: 0 0 12px cyan;
+  }
+  /* 🍞 TOAST - LUÔN Ở GIỮA MÀN HÌNH */
+
+  #toast-container {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+
+    z-index: 9999;
+    pointer-events: none;
+  }
+
+  .toast {
+    min-width: 240px;
+    max-width: 90vw;
+    text-align: center;
+  }
+}

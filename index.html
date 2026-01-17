@@ -34,7 +34,7 @@
         </button>
         <button
           id="fullscreen-btn"
-          class="neon-btn neon-box1 w3-right buu"
+          class="neon-btn neon-box1 w3-right buu w3-hide-small w3-hide-medium"
           style="padding: 1%"
           onclick="toggleFullscreen()"
         >
@@ -171,14 +171,6 @@
       >
         🔊NHẠC: BẬT
       </button>
-      <button
-        id="sound-btn"
-        class="neon-btn neon-box2 w3-left buu sound-btn-game w3-hide-large"
-        style="left: 15px; top: 4px; padding: 2px; position: absolute"
-        onclick="toggleSound()"
-      >
-        🔊NHẠC: BẬT
-      </button>
       <div class="mobile-hud">
         <div class="hud-item score">⭐ <span id="hud-score">0</span></div>
         <div class="hud-item correct">✅ <span id="hud-correct">0</span></div>
@@ -189,13 +181,20 @@
       <div id="progress-bar-container">
         <div id="progress-bar"></div>
       </div>
-      <div id="toast-container">
+      <div id="toast-container ">
         <div id="toast" class="toast"></div>
       </div>
       <h2 id="question"></h2>
       <div id="answers"></div>
       <button id="skip-btn" class="neon-btn neon-box1" onclick="skipQuestion()">
         ⏭ Bỏ qua
+      </button>
+      <button
+        id="sound-btn"
+        class="neon-btn neon-box2 w3-left buu sound-btn-game w3-hide-large"
+        onclick="toggleSound()"
+      >
+        🔊<span> NHẠC</span>: BẬT
       </button>
       <div class="neon-box2" id="result-box"></div>
     </div>
