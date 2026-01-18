@@ -136,7 +136,6 @@ img {
   }
 
   .finish-actions .neon-btn {
-    width: 100%;
     font-size: 16px;
     padding: 12px;
   }
@@ -1229,6 +1228,32 @@ button.buu {
     overflow-y: auto;
     box-sizing: border-box;
   }
+  #result-box {
+    text-align: center; /* chữ nằm giữa */
+    margin: 0 auto; /* box nằm giữa */
+    width: 95%;
+  }
+  #result-box {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  #result-box h2,
+  #result-box p {
+    text-align: center;
+  }
+
+  .finish-actions {
+    display: flex;
+    flex-direction: column; /* nút xếp dọc */
+    align-items: center;
+    gap: 12px;
+  }
+
+  .finish-actions button {
+    width: 90%;
+    max-width: 300px;
+  }
   .title-history {
     margin-top: 8px;
     text-align: center;
@@ -1283,19 +1308,14 @@ button.buu {
     top: env(safe-area-inset-top, 8px);
     left: env(safe-area-inset-left, 8px);
     right: auto;
-
     z-index: 2000;
-
     padding: 6px 10px;
     font-size: 14px;
     border-radius: 999px;
-
     opacity: 0.65; /* nhạt */
     background: rgba(0, 0, 0, 0.55);
     color: #fff;
-
     box-shadow: 0 0 6px rgba(0, 255, 255, 0.4);
-
     animation: none !important;
     transform: none !important;
   }
