@@ -22,9 +22,7 @@ body {
 }
 
 .neon-btn {
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .neon-btn:hover {
@@ -287,10 +285,7 @@ button {
   border-radius: 14px;
   background: linear-gradient(45deg, #ff9800, #ff5722);
   color: white;
-  transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease,
-    background 0.25s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
 }
 
 /* TOP BAR */
@@ -425,8 +420,7 @@ button.buu {
   z-index: -1;
   padding: 5px; /* tạo khoảng trống cho viền */
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.5); /* hiệu ứng neon */
-  -webkit-mask:
-    linear-gradient(#fff 0 0) padding-box,
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box,
     linear-gradient(#fff 0 0) content-box;
   -webkit-mask-composite: xor;
   mask-composite: exclude;
@@ -601,9 +595,7 @@ button.buu {
 /* Hover effect */
 .neon-btn:hover {
   transform: scale(1.1);
-  box-shadow:
-    0 0 30px #ff5722,
-    0 0 60px #ff9800;
+  box-shadow: 0 0 30px #ff5722, 0 0 60px #ff9800;
 }
 /* ===== RULES BOX ===== */
 .rules {
@@ -1128,9 +1120,7 @@ button.buu {
 
 .neon-checkbox input:checked + .checkmark {
   background: var(--neon-color);
-  box-shadow:
-    0 0 12px var(--neon-color),
-    inset 0 0 6px #000;
+  box-shadow: 0 0 12px var(--neon-color), inset 0 0 6px #000;
 }
 
 .neon-checkbox .checkmark::after {
@@ -1215,8 +1205,7 @@ button.buu {
 /* FULL MÀN HÌNH CHO GAME */
 /* ===== FULLSCREEN CHỈ CHO MOBILE ===== */
 @media (max-width: 768px) {
-  #bubu,
-  #history-screen {
+  #bubu {
     position: fixed;
     inset: 0;
     width: 100vw;
