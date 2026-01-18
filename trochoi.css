@@ -1344,3 +1344,211 @@ button.buu {
     text-align: center;
   }
 }
+/* ===== DARK MODE ===== */
+body.dark {
+  background: radial-gradient(circle at top, #0f2027, #000);
+  color: #e0e0e0;
+}
+
+/* khung chính */
+body.dark .neon-box1,
+body.dark .neon-box2,
+body.dark .quiz-container,
+body.dark .rules-fullscreen {
+  background: rgba(20, 20, 20, 0.85);
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
+}
+
+/* bảng lịch sử */
+body.dark table {
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+}
+
+body.dark th {
+  background: rgba(0, 255, 255, 0.25);
+}
+
+/* modal */
+body.dark .modal-box {
+  background: #111;
+  color: #fff;
+}
+
+/* thanh thời gian */
+body.dark #timer {
+  color: #00ffff;
+}
+
+/* progress bar */
+body.dark #progress-bar {
+  background: linear-gradient(90deg, #00ffff, #00ff88);
+}
+/* NỀN MÀN CHƠI */
+body.dark #bubu {
+  background: radial-gradient(circle at top, #0b1a1f, #000);
+  padding: 25px;
+  border-radius: 20px;
+}
+body.dark #question {
+  background: linear-gradient(135deg, #0f2a33, #071418);
+  color: #eaffff;
+  padding: 22px;
+  border-radius: 18px;
+  font-size: 22px;
+  line-height: 1.4;
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.35);
+}
+body.dark .answer.disabled {
+  opacity: 0.55;
+  pointer-events: none;
+}
+body.dark .mobile-hud {
+  background: rgba(0, 0, 0, 0.65);
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+}
+
+body.dark #timer {
+  color: #00ffff;
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.8);
+}
+body.dark #progress-bar-container {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+body.dark #progress-bar {
+  background: linear-gradient(90deg, #00ffff, #00ff88);
+}
+body.dark .answer {
+  background: linear-gradient(135deg, #121212, #1f1f1f);
+  color: #f1ffff;
+  border-left: 6px solid #00eaff;
+  padding: 18px 20px;
+  margin: 14px 0;
+  border-radius: 16px;
+  font-size: 18px;
+  font-weight: 600;
+  box-shadow: 0 0 18px rgba(0, 234, 255, 0.25);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+body.dark .answer:hover {
+  background: linear-gradient(135deg, #0f2f36, #081b20);
+  transform: translateX(6px) scale(1.02);
+  box-shadow: 0 0 28px rgba(0, 255, 255, 0.55);
+}
+body.dark .answer.selected {
+  background: linear-gradient(135deg, #0b3a4a, #052029);
+  border-left-color: #00ffff;
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.7);
+}
+body.dark .answer.disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+body.dark .rules-fullscreen {
+  background: linear-gradient(135deg, #0c1f26, #050c10);
+  color: #e9f6f8;
+  padding: 28px;
+  border-radius: 20px;
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.35);
+}
+body.dark .rules-fullscreen h2,
+body.dark .rules-fullscreen h3 {
+  color: #00ffff;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
+}
+body.dark .rules-fullscreen p,
+body.dark .rules-fullscreen li {
+  font-size: 18px;
+  line-height: 1.7;
+  color: #f0fbff;
+}
+body.dark .rules-fullscreen ul {
+  padding-left: 22px;
+}
+
+body.dark .rules-fullscreen li {
+  margin-bottom: 12px;
+}
+body.dark .rules-fullscreen strong,
+body.dark .rules-fullscreen span.highlight {
+  color: #00ffcc;
+  font-weight: 700;
+}
+body.dark .rules-fullscreen .warning {
+  background: rgba(255, 193, 7, 0.15);
+  border-left: 5px solid #ffc107;
+  padding: 14px 16px;
+  border-radius: 10px;
+  color: #fff3cd;
+}
+body.dark .history-box,
+body.dark .history-container {
+  background: linear-gradient(135deg, #0c1f26, #050c10);
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
+}
+body.dark table {
+  width: 100%;
+  border-collapse: collapse;
+  background: transparent;
+  color: #f0fbff;
+}
+body.dark th {
+  background: rgba(0, 255, 255, 0.22);
+  color: #001e22;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 14px;
+  text-align: center;
+}
+body.dark td {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 14px;
+  font-size: 16px;
+  text-align: center;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.15);
+}
+body.dark tr:hover td {
+  background: rgba(0, 255, 255, 0.12);
+}
+/* Điểm cao / đúng nhiều */
+body.dark .score-good {
+  color: #00ff99;
+  font-weight: 700;
+}
+
+/* Trung bình */
+body.dark .score-mid {
+  color: #ffe066;
+  font-weight: 700;
+}
+
+/* Thấp */
+body.dark .score-bad {
+  color: #ff6b6b;
+  font-weight: 700;
+}
+body.dark tr.latest td {
+  background: rgba(0, 255, 255, 0.2);
+  box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.5);
+  font-weight: 700;
+}
+@media (max-width: 768px) {
+  body.dark th,
+  body.dark td {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+body tr:hover td {
+  background: rgba(0, 200, 255, 0.15);
+}

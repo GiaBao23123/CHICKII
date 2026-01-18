@@ -33,6 +33,14 @@
           🔊NHẠC: BẬT
         </button>
         <button
+          id="darkmode-btn"
+          class="neon-btn neon-box1 buu"
+          style="padding: 1%"
+          onclick="toggleDarkMode()"
+        >
+          🌙 DARK MODE
+        </button>
+        <button
           id="fullscreen-btn"
           class="neon-btn neon-box1 w3-right buu w3-hide-small w3-hide-medium"
           style="padding: 1%"
@@ -96,16 +104,21 @@
         </div>
         <h1>📜 THỂ LỆ</h1>
         <p>
-          Người chơi sẽ lần lượt trả lời các câu hỏi trắc nghiệm được random
-          ngẫu nhiên về kiến thức các môn học Lớp 9 (Toán, Ngữ Văn, Tin học,
-          Lịch sử, Địa lí, GDCD, KHTN).
+          Người chơi sẽ tham gia trả lời các câu hỏi <b>trắc nghiệm</b> về
+          <b>kiến thức – văn hoá – lịch sử Bắc Ninh</b>. Câu hỏi và đáp án được
+          <b>xáo trộn ngẫu nhiên</b> mỗi lần chơi.
         </p>
         <ul>
-          <li>Cấp độ Dễ: 20 câu</li>
-          <li>Cấp độ Bình thường: 30 câu</li>
-          <li>Cấp độ Khó: 50 câu</li>
-          <li>Mỗi câu chỉ có 1 đáp án đúng</li>
-          <li>Kết thúc sẽ hiển thị số câu đúng</li>
+          <li>Tổng thời gian làm bài: <b>10 phút</b></li>
+          <li>Mỗi câu hỏi có <b>4 đáp án</b>, chỉ <b>1 đáp án đúng</b></li>
+          <li>Trả lời đúng: <b>+10 điểm</b></li>
+          <li>Trả lời sai hoặc bỏ qua: <b>tính 1 câu sai</b></li>
+          <li>Khi hết thời gian, trò chơi sẽ <b>tự động kết thúc</b></li>
+          <li>
+            Kết thúc sẽ hiển thị
+            <b>điểm số, số câu đúng – sai và thời gian làm bài</b>
+          </li>
+          <li>Kết quả được <b>lưu vào lịch sử làm bài</b></li>
         </ul>
       </div>
     </div>
@@ -199,37 +212,80 @@
       <div class="neon-box2" id="result-box"></div>
     </div>
     <script>
+      function hideToast() {
+        const toast = document.getElementById("toast");
+        if (!toast) return;
+        toast.className = "toast";
+        toast.innerText = "";
+        if (toastTimer) {
+          clearTimeout(toastTimer);
+          toastTimer = null;
+        }
+      }
+      function toggleDarkMode() {
+        const isDark = document.body.classList.contains("dark");
+        if (isDark) {
+          openLightModeModal();
+        } else {
+          openDarkModeModal();
+        }
+      }
+      function applyDarkMode() {
+        document.body.classList.add("dark");
+        localStorage.setItem("darkMode", "on");
+        document.getElementById("darkmode-btn").innerText = "☀ LIGHT MODE";
+      }
+      function applyLightMode() {
+        document.body.classList.remove("dark");
+        localStorage.setItem("darkMode", "off");
+        document.getElementById("darkmode-btn").innerText = "🌙 DARK MODE";
+      }
+      document.addEventListener("DOMContentLoaded", () => {
+        const saved = localStorage.getItem("darkMode");
+        if (saved === "on") {
+          document.body.classList.add("dark");
+          const btn = document.getElementById("darkmode-btn");
+          if (btn) btn.innerText = "☀ LIGHT MODE";
+        }
+        renderHistory();
+      });
+      if (
+        !localStorage.getItem("darkMode") &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+      ) {
+        document.body.classList.add("dark");
+      }
       function renderHistory() {
         const history = JSON.parse(localStorage.getItem("quizHistory") || "[]");
         const body = document.getElementById("history-body");
         body.innerHTML = "";
         if (history.length === 0) {
           body.innerHTML = `
-      <tr>
-        <td colspan="6">Chưa có dữ liệu</td>
-      </tr>
-    `;
+                  <tr>
+                    <td colspan="6">Chưa có dữ liệu</td>
+                  </tr>
+                `;
           return;
         }
         history.forEach((h, index) => {
           const tr = document.createElement("tr");
           tr.innerHTML = `
-      <td>
-        <label class="neon-checkbox">
-  <input
-    type="checkbox"
-    class="history-check"
-    data-index="${index}"
-  />
-  <span class="checkmark"></span>
-</label>
-      </td>
-      <td>${h.time}</td>
-      <td>${h.score}</td>
-      <td>${h.correct}</td>
-      <td>${h.wrong}</td>
-      <td>${h.timeUsed}</td>
-    `;
+                  <td>
+                    <label class="neon-checkbox">
+              <input
+                type="checkbox"
+                class="history-check"
+                data-index="${index}"
+              />
+              <span class="checkmark"></span>
+            </label>
+                  </td>
+                  <td>${h.time}</td>
+                  <td>${h.score}</td>
+                  <td>${h.correct}</td>
+                  <td>${h.wrong}</td>
+                  <td>${h.timeUsed}</td>
+                `;
           body.appendChild(tr);
         });
       }
@@ -331,11 +387,10 @@
           const now = Date.now();
           const elapsed = Math.floor((now - startTime) / 1000);
           totalTime = GAME_TIME - elapsed;
-          // ⛔ Hết giờ
           if (totalTime <= 0) {
             clearInterval(timer);
             timerEl.classList.remove("shake");
-            finishGame(); // hoặc timeUp()
+            finishGame();
             return;
           }
           if (totalTime <= 30) {
@@ -368,13 +423,13 @@
         void qc.offsetWidth;
         qc.classList.add("slide-left");
         const q = quiz[index];
-        shuffleAnswers(q); // 👈 RANDOM ĐÁP ÁN Ở ĐÂY
+        shuffleAnswers(q);
         document.getElementById("progress").innerText = `Câu ${index + 1}/${
           quiz.length
         }`;
         const questionEl = document.getElementById("question");
         questionEl.classList.remove("question-animate");
-        void questionEl.offsetWidth; // reset animation
+        void questionEl.offsetWidth;
         questionEl.classList.add("question-animate");
         document.getElementById("question").innerText = q.question;
         const answersDiv = document.getElementById("answers");
@@ -455,30 +510,28 @@
           emoji = "💪";
         }
         let html = `
-        <div"
-            <h2>🎉 KẾT QUẢ CUỐI CÙNG</h2>
-            <p><b>🏆 Điểm:</b> ${score}</p>
-            <p><b>✅ Số câu đúng:</b> ${correctCount}</p>
-            <p><b>❌ Số câu sai:</b> ${wrongCount}</p>
-            <p><b>⏱ Thời gian suy nghĩ:</b> ${minutes} phút ${seconds} giây</p>
-            <p><b>🎖 Xếp hạng: ${emoji} ${rank}</b></p>
-            <hr>
-  <div class="finish-actions">
-      <button class="neon-box1 neon-btn" onclick="restartGame()">🔄 Chơi lại</button>
-      <button class="neon-box1 neon-btn" onclick="goHome()">🏠 Về trang chính</button>
-       </div>
-       </div>
-            `;
-        // 🔥 LƯU LỊCH SỬ LÀM BÀI
+                    <div"
+                        <h2>🎉 KẾT QUẢ CUỐI CÙNG</h2>
+                        <p><b>🏆 Điểm:</b> ${score}</p>
+                        <p><b>✅ Số câu đúng:</b> ${correctCount}</p>
+                        <p><b>❌ Số câu sai:</b> ${wrongCount}</p>
+                        <p><b>⏱ Thời gian suy nghĩ:</b> ${minutes} phút ${seconds} giây</p>
+                        <p><b>🎖 Xếp hạng: ${emoji} ${rank}</b></p>
+                        <hr>
+              <div class="finish-actions">
+                  <button class="neon-box1 neon-btn" onclick="restartGame()">🔄 Chơi lại</button>
+                  <button class="neon-box1 neon-btn" onclick="goHome()">🏠 Về trang chính</button>
+                   </div>
+                   </div>
+                        `;
         const history = JSON.parse(localStorage.getItem("quizHistory") || "[]");
         history.unshift({
-          time: getNowTime(), // thời gian thực
+          time: getNowTime(),
           score: score,
           correct: correctCount,
           wrong: wrongCount,
           timeUsed: `${minutes}p ${seconds}s`,
         });
-        // chỉ giữ 10 lần gần nhất
         localStorage.setItem(
           "quizHistory",
           JSON.stringify(history.slice(0, 10)),
@@ -487,15 +540,11 @@
         resultBox.style.display = "block";
         renderHistory();
       }
-      let startTime; // thời điểm bắt đầu
-      const GAME_TIME = 10 * 60; // 20 phút (giây)
+      let startTime;
+      const GAME_TIME = 10 * 60;
       function startGame() {
         stopAllMusic();
         localStorage.removeItem("skipNoAsk");
-        allSounds.forEach((s) => {
-          s.pause();
-          s.currentTime = 0;
-        });
         isInGame = true;
         if (soundEnabled) {
           startSound.play().catch(() => {});
@@ -563,12 +612,7 @@
         document.getElementById("progress-bar-container").style.display =
           "block";
         document.getElementById("progress-bar").style.width = "0%";
-        // reset timer
         clearInterval(timer);
-        totalTime = GAME_TIME;
-        startTime = Date.now();
-        // ẨN KẾT QUẢ
-        // gọi lại startGame như lúc mới chơi
         startGame();
         stopAllMusic();
       }
@@ -858,6 +902,7 @@
           correct: 2,
         },
       ];
+      let toastTimer = null;
       quiz = quiz.sort(() => Math.random() - 0.5);
       let index = 0;
       let score = 0;
@@ -870,11 +915,15 @@
       const finishSound = new Audio("./amthanh/end.mp3"); // 🔊 âm thanh kết thúc
       function showToast(message, type) {
         const toast = document.getElementById("toast");
+        if (toastTimer) {
+          clearTimeout(toastTimer);
+          toastTimer = null;
+        }
         toast.innerText = message;
         toast.className = `toast show ${type}`;
-        setTimeout(() => {
+        toastTimer = setTimeout(() => {
           toast.className = "toast";
-        }, 1000);
+        }, 1200);
       }
       function openHistory() {
         document.getElementById("main-screen").style.display = "none";
@@ -980,12 +1029,9 @@
       function getNowTime() {
         const now = new Date();
         const pad = (n) => (n < 10 ? "0" + n : n);
-        return `${pad(now.getDate())}/${pad(now.getMonth() + 1)}/${now.getFullYear()} 
-          ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+        return `${pad(now.getDate())}/${pad(now.getMonth() + 1)}/${now.getFullYear()}
+                      ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
       }
-      document.addEventListener("DOMContentLoaded", () => {
-        renderHistory();
-      });
       function clearHistory() {
         const ok = confirm(
           "⚠ Bạn có chắc chắn muốn XOÁ TOÀN BỘ lịch sử làm bài?",
@@ -1005,9 +1051,9 @@
           .map((cb) => parseInt(cb.dataset.index))
           .sort((a, b) => b - a);
         document.getElementById("delete-history-text").innerHTML = `
-    Bạn có chắc chắn muốn xoá <b>${deleteIndexes.length}</b> mục đã chọn?<br>
-    <b>Hành động này không thể hoàn tác!</b>
-  `;
+                Bạn có chắc chắn muốn xoá <b>${deleteIndexes.length}</b> mục đã chọn?<br>
+                <b>Hành động này không thể hoàn tác!</b>
+              `;
         document.getElementById("delete-history-modal").style.display = "flex";
       }
       function closeDeleteHistoryModal() {
@@ -1027,8 +1073,34 @@
           cb.checked = master.checked;
         });
       }
+      function openDarkModeModal() {
+        document.getElementById("darkmode-modal").style.display = "flex";
+      }
+      function confirmDarkMode() {
+        hideToast();
+        applyDarkMode();
+        if (document.getElementById("darkmode-remember")?.checked) {
+          localStorage.setItem("darkmode_skip", "true");
+        }
+        closeDarkModeModal();
+      }
+      function closeDarkModeModal() {
+        document.getElementById("darkmode-modal").style.display = "none";
+      }
+      function openLightModeModal() {
+        document.getElementById("lightmode-modal").style.display = "flex";
+      }
+      function confirmLightMode() {
+        hideToast();
+        applyLightMode();
+        closeLightModeModal();
+      }
+      function closeLightModeModal() {
+        document.getElementById("lightmode-modal").style.display = "none";
+        const cb = document.getElementById("lightmode-remember");
+        if (cb) cb.checked = false;
+      }
     </script>
-    <!-- MODAL XÁC NHẬN BỎ QUA -->
     <div id="skip-modal" class="modal-overlay" style="display: none">
       <div class="modal-box neon-box2">
         <h2>⏭ Bỏ qua câu hỏi?</h2>
@@ -1050,7 +1122,6 @@
         </div>
       </div>
     </div>
-    <!-- MODAL XÁC NHẬN XOÁ LỊCH SỬ -->
     <div id="delete-history-modal" class="modal-overlay" style="display: none">
       <div class="modal-box neon-box2">
         <h2>🗑 Xác nhận xoá lịch sử</h2>
@@ -1058,7 +1129,6 @@
           Bạn có chắc chắn muốn xoá các mục đã chọn?<br />
           <b>Hành động này không thể hoàn tác!</b>
         </p>
-
         <div class="modal-actions">
           <button
             class="neon-btn neon-box1 danger"
@@ -1069,6 +1139,46 @@
           <button
             class="neon-btn neon-box1"
             onclick="closeDeleteHistoryModal()"
+          >
+            ❌ HUỶ
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="darkmode-modal" class="modal-overlay" style="display: none">
+      <div class="modal-box neon-box2">
+        <h2>🌙 Bật Dark Mode?</h2>
+        <p>
+          Giao diện sẽ chuyển sang <b>Dark Mode</b><br />
+          giúp đỡ mỏi mắt khi chơi lâu.
+        </p>
+        <div class="modal-actions">
+          <button class="neon-btn neon-box1" onclick="confirmDarkMode()">
+            🌙 BẬT DARK MODE
+          </button>
+          <button
+            class="neon-btn neon-box1 danger"
+            onclick="closeDarkModeModal()"
+          >
+            ❌ HỦY
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="lightmode-modal" class="modal-overlay" style="display: none">
+      <div class="modal-box neon-box2">
+        <h2>☀ Chuyển sang Light Mode?</h2>
+        <p>
+          Giao diện sẽ trở về <b>Light Mode</b><br />
+          phù hợp khi sử dụng ban ngày.
+        </p>
+        <div class="modal-actions">
+          <button class="neon-btn neon-box1" onclick="confirmLightMode()">
+            ☀ CHUYỂN LIGHT MODE
+          </button>
+          <button
+            class="neon-btn neon-box1 danger"
+            onclick="closeLightModeModal()"
           >
             ❌ HUỶ
           </button>
