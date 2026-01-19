@@ -22,7 +22,9 @@ body {
 }
 
 .neon-btn {
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .neon-btn:hover {
@@ -285,7 +287,10 @@ button {
   border-radius: 14px;
   background: linear-gradient(45deg, #ff9800, #ff5722);
   color: white;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
 }
 
 /* TOP BAR */
@@ -420,7 +425,8 @@ button.buu {
   z-index: -1;
   padding: 5px; /* tạo khoảng trống cho viền */
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.5); /* hiệu ứng neon */
-  -webkit-mask: linear-gradient(#fff 0 0) padding-box,
+  -webkit-mask:
+    linear-gradient(#fff 0 0) padding-box,
     linear-gradient(#fff 0 0) content-box;
   -webkit-mask-composite: xor;
   mask-composite: exclude;
@@ -595,7 +601,9 @@ button.buu {
 /* Hover effect */
 .neon-btn:hover {
   transform: scale(1.1);
-  box-shadow: 0 0 30px #ff5722, 0 0 60px #ff9800;
+  box-shadow:
+    0 0 30px #ff5722,
+    0 0 60px #ff9800;
 }
 /* ===== RULES BOX ===== */
 .rules {
@@ -1120,7 +1128,9 @@ button.buu {
 
 .neon-checkbox input:checked + .checkmark {
   background: var(--neon-color);
-  box-shadow: 0 0 12px var(--neon-color), inset 0 0 6px #000;
+  box-shadow:
+    0 0 12px var(--neon-color),
+    inset 0 0 6px #000;
 }
 
 .neon-checkbox .checkmark::after {
@@ -1540,4 +1550,82 @@ body.dark tr.latest td {
 }
 body tr:hover td {
   background: rgba(0, 200, 255, 0.15);
+}
+/* BOX CHI TIẾT */
+.detail-box {
+  max-height: 80vh;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+/* 1 CÂU HỎI = 1 CARD */
+.detail-item {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 15px;
+  line-height: 1.6;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.15);
+  animation: fadeIn 0.3s ease;
+}
+
+/* ĐÚNG */
+.detail-item.correct {
+  border-left: 6px solid #00ff99;
+}
+
+/* SAI */
+.detail-item.wrong {
+  border-left: 6px solid #ff6666;
+}
+
+/* CÂU HỎI */
+.detail-question {
+  font-size: 17px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+/* ĐÁP ÁN */
+.detail-answer {
+  margin-left: 10px;
+}
+
+/* BADGE */
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: bold;
+  margin-left: 8px;
+}
+
+.badge.correct {
+  background: #00ff99;
+  color: #000;
+}
+
+.badge.wrong {
+  background: #ff6666;
+  color: #000;
+}
+
+/* ANIMATION */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.best-score {
+  margin-top: 10px;
+  font-size: 22px;
+  font-weight: bold;
+  color: gold;
+  text-shadow: 0 0 8px gold;
 }
